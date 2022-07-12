@@ -68,7 +68,7 @@ def onSuccess(version, build_number)
   )
 end
 
-def onError(exception) 
+def onError(exception, version, build_number) 
   slack(
     message: "Something went wrong",
     success: false, 
