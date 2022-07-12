@@ -32,7 +32,7 @@ jobs:
       - run: bundle install
       - run:
           name: Fastlane
-          command: bundle exec fastlane $FASTLANE_LANE
+          command: bundle exec fastlane $FASTLANE_LANE slack:$SLACK_URL
       - store_artifacts:
           path: output
       - store_test_results:

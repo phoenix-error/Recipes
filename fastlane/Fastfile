@@ -27,7 +27,7 @@ platform :ios do
   end
 
   desc "Run all tests"
-  lane :test do
+  lane :test do |options|
     begin
     # add actions here: https://docs.fastlane.tools/actions
       increment_build_number
@@ -42,21 +42,23 @@ platform :ios do
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      onSuccess(version, build_number)
+      SLACK_URL = options[:slack]
+      onSuccess(version, build_number, SLACK_URL)
     rescue => exception
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      onError(exception, version, build_number)
+      SLACK_URL = options[:slack]
+      onError(exception, version, build_number, SLACK_URL)
     end
   end
 end
 
-def onSuccess(version, build_number)
+def onSuccess(version, build_number, SLACK_URL)
   slack(
     message: "Successfully built and tested Recipes App",
     success: true,
-    slack_url: ENV["SLACK_URL"],
+    slack_url: SLACK_URL,
     default_payloads: [
             :last_git_commit_hash
         ],
@@ -68,11 +70,11 @@ def onSuccess(version, build_number)
   )
 end
 
-def onError(exception, version, build_number) 
+def onError(exception, version, build_number, SLACK_URL) 
   slack(
     message: "Something went wrong",
     success: false, 
-    slack_url: ENV["SLACK_URL"],
+    slack_url: SLACK_URL,
     attachment_properties: {
       fields: [
         {
