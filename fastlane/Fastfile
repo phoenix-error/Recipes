@@ -36,7 +36,10 @@ platform :ios do
         scheme: "Recipes",
         device: "iPhone 13 Pro (15.5)",
         testplan: "Recipes",
-        xcodebuild_formatter: "xcbeautify"
+        xcodebuild_formatter: "xcbeautify",
+        output_types: 'junit',
+        output_files: 'junit.xml',
+        output_directory: './fastlane/test_output/xctest' 
       )
 
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
