@@ -17,6 +17,10 @@ default_platform(:ios)
 
 platform :ios do
   desc "This lane tests the Recipes-App"
+  before_all do 
+    setup_circle_ci
+  end
+
   lane :test do
     begin
     # add actions here: https://docs.fastlane.tools/actions
@@ -44,6 +48,22 @@ platform :ios do
       onError(exception, version, build_number)
     end
   end
+end
+
+def onSuccess(version, build_number)
+  slack(
+    message: "Successfully built and tested Recipes App",
+    success: true,
+    slack_url: ENV["SLACK_URL"],
+    default_payloads: [
+            :last_git_commit_hash
+        ],
+        payload: {
+            "Build Date" => Time.new.to_s,
+            "Version" => version,
+            "Build Number" => build_number
+        }
+  )
 end
 
 def onError(exception) 
@@ -74,21 +94,3 @@ def onError(exception)
     }
   )
 end
-
-
-def onSuccess(version, build_number)
-  slack(
-    message: "Successfully built and tested Recipes App",
-    success: true,
-    slack_url: ENV["SLACK_URL"],
-    default_payloads: [
-            :last_git_commit_hash
-        ],
-        payload: {
-            "Build Date" => Time.new.to_s,
-            "Version" => version,
-            "Build Number" => build_number
-        }
-  )
-end
-
