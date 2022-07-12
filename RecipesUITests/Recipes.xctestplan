@@ -1,0 +1,46 @@
+{
+  "configurations" : [
+    {
+      "id" : "C005906A-438B-467B-B03C-B7E0A0009FE9",
+      "name" : "Configuration 1",
+      "options" : {
+        "locationScenario" : {
+          "identifier" : "New York, NY, USA",
+          "referenceType" : "built-in"
+        },
+        "region" : "US"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Recipes.xcodeproj",
+      "identifier" : "6FD9053F2827DD8600C4FA3A",
+      "name" : "Recipes"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Recipes.xcodeproj",
+        "identifier" : "6FD9054F2827DD8900C4FA3A",
+        "name" : "RecipesTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "skippedTests" : [
+        "RecipesUITests\/testLaunchPerformance()",
+        "RecipesUITestsLaunchTests",
+        "RecipesUITestsLaunchTests\/testLaunch()"
+      ],
+      "target" : {
+        "containerPath" : "container:Recipes.xcodeproj",
+        "identifier" : "6FD905592827DD8900C4FA3A",
+        "name" : "RecipesUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
