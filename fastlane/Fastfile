@@ -42,19 +42,19 @@ platform :ios do
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      SLACK_URL = options[:slack]
-      onSuccess(version, build_number, SLACK_URL)
+      slack = options[:slack]
+      onSuccess(version, build_number, slack)
     rescue => exception
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      SLACK_URL = options[:slack]
-      onError(exception, version, build_number, SLACK_URL)
+      slack = options[:slack]
+      onError(exception, version, build_number, slack)
     end
   end
 end
 
-def onSuccess(version, build_number, SLACK_URL)
+def onSuccess(version, build_number, slack)
   slack(
     message: "Successfully built and tested Recipes App",
     success: true,
@@ -70,7 +70,7 @@ def onSuccess(version, build_number, SLACK_URL)
   )
 end
 
-def onError(exception, version, build_number, SLACK_URL) 
+def onError(exception, version, build_number, slack) 
   slack(
     message: "Something went wrong",
     success: false, 
