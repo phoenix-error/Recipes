@@ -28,7 +28,7 @@ platform :ios do
       scan(
         project: "Recipes.xcodeproj",
         scheme: "Recipes",
-        device: "iPhone 13 (15.5)",
+        device: "iPhone 13 Pro (15.5)",
         testplan: "Recipes",
         xcodebuild_formatter: "xcbeautify"
       )
