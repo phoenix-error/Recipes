@@ -11,6 +11,9 @@ jobs:
       FASTLANE_LANE: lint
     steps:
       - checkout
+      - run:
+        name: Install swiftlint
+        command: brew install swiftlint
       - run: bundle install
       - run:
           name: Fastlane
