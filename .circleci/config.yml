@@ -36,12 +36,9 @@ jobs:
       - store_artifacts:
           path: output
       - store_test_results:
-          path: "./fastlane/test_output"
+          path: "output/scan"
 
 workflows:
   lint-build-test:
     jobs:
-      - lint
       - build-and-test:
-          requires:
-            - lint
