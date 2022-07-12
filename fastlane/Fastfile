@@ -58,7 +58,7 @@ def onSuccess(version, build_number, slack)
   slack(
     message: "Successfully built and tested Recipes App",
     success: true,
-    slack_url: SLACK_URL,
+    slack_url: slack,
     default_payloads: [
             :last_git_commit_hash
         ],
@@ -74,7 +74,7 @@ def onError(exception, version, build_number, slack)
   slack(
     message: "Something went wrong",
     success: false, 
-    slack_url: SLACK_URL,
+    slack_url: slack,
     attachment_properties: {
       fields: [
         {
