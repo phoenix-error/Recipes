@@ -8,13 +8,22 @@
 import SwiftUI
 
 struct RecipeInstructionView: View {
-    let recipe: Recipe
+    @EnvironmentObject var recipeManager: RecipeManager
+    var recipe: Recipe?
+    
+    var instructions: [String] {
+        guard let recipe = recipe else {
+            return recipeManager.steps
+            }
+        return recipe.steps
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Instructions").font(.title2).bold()
             
             VStack(alignment: .leading, spacing: 20) {
-                ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, instructionStep in
+                ForEach(Array(instructions.enumerated()), id: \.offset) { index, instructionStep in
                     HStack(alignment: .firstTextBaseline) {
                         Text("\(index)")
                             .font(.title3)
@@ -26,7 +35,7 @@ struct RecipeInstructionView: View {
                     }
                 }
             }
-        }.padding()
+        }
     }
 }
 

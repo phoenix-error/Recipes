@@ -17,40 +17,67 @@ default_platform(:ios)
 
 platform :ios do
   desc "This lane tests the Recipes-App"
-  lane :test do
+  before_all do 
+    setup_circle_ci
+  end
+
+  desc "Use Swiftlint for a clean coding style"
+  lane :lint do
+    swiftlint(config_file: ".swiftlint.yml")
+  end
+
+  desc "Run all tests"
+  lane :test do |options|
     begin
     # add actions here: https://docs.fastlane.tools/actions
-      setup_ci if ENV['CI']
-
       increment_build_number
-      swiftlint(config_file: ".swiftlint.yml")
-      
       scan(
         project: "Recipes.xcodeproj",
         scheme: "Recipes",
         device: "iPhone 13 Pro (15.5)",
         testplan: "Recipes",
-        xcodebuild_formatter: "xcbeautify"
+        xcodebuild_formatter: "xcbeautify",
+        output_types: 'junit',
+        output_files: 'junit.xml',
+        output_directory: './fastlane/test_output/xctest' 
       )
 
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      onSuccess(version, build_number)
+      slack = options[:slack]
+      onSuccess(version, build_number, slack)
     rescue => exception
       version = get_version_number(xcodeproj: "Recipes.xcodeproj")
       build_number = get_build_number(xcodeproj: "Recipes.xcodeproj")
 
-      onError(exception, version, build_number)
+      slack = options[:slack]
+      onError(exception, version, build_number, slack)
     end
   end
 end
 
-def onError(exception) 
+def onSuccess(version, build_number, slack)
+  slack(
+    message: "Successfully built and tested Recipes App",
+    success: true,
+    slack_url: slack,
+    default_payloads: [
+            :last_git_commit_hash
+        ],
+        payload: {
+            "Build Date" => Time.new.to_s,
+            "Version" => version,
+            "Build Number" => build_number
+        }
+  )
+end
+
+def onError(exception, version, build_number, slack) 
   slack(
     message: "Something went wrong",
     success: false, 
-    slack_url: ENV["SLACK_URL"],
+    slack_url: slack,
     attachment_properties: {
       fields: [
         {
@@ -74,21 +101,3 @@ def onError(exception)
     }
   )
 end
-
-
-def onSuccess(version, build_number)
-  slack(
-    message: "Successfully built and tested Recipes App",
-    success: true,
-    slack_url: ENV["SLACK_URL"],
-    default_payloads: [
-            :last_git_commit_hash
-        ],
-        payload: {
-            "Build Date" => Time.new.to_s,
-            "Version" => version,
-            "Build Number" => build_number
-        }
-  )
-end
-
