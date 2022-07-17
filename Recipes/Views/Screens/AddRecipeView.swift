@@ -17,6 +17,7 @@ struct AddRecipeView: View {
     @State var cookTime = "0"
     
     @State private var currentIngredient = ""
+    @State private var currentInstruction = ""
     
     var recipeAddable: Bool {
         return !recipeManager.name.isEmpty && !recipeManager.author.isEmpty &&
@@ -53,6 +54,14 @@ struct AddRecipeView: View {
                         currentIngredient = ""
                     }
                 }
+                
+//                RecipeInstructionView().environmentObject(recipeManager)
+//                TextField("Instruction", text: $currentInstruction).onSubmit {
+//                    if !currentInstruction.isEmpty {
+//                        recipeManager.steps.append(currentInstruction)
+//                        currentInstruction = ""
+//                    }
+//                }
                 
                 // MARK: Times
                 HStack {
