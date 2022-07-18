@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var firebaseManager: FirebaseManager
-    @State private var addingViewBool = false
     
     var body: some View {
         List(firebaseManager.recipes) { recipe in
@@ -25,22 +24,16 @@ struct HomeView: View {
         .onAppear(perform: firebaseManager.fetch)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button {
-                    addingViewBool.toggle()
-                    
-                } label: {
+                NavigationLink(destination: AddRecipeView()) {
                     Image(systemName: "plus")
                 }
-                
+
                 Button {
                     firebaseManager.logout()
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                 }
             }
-        }
-        .sheet(isPresented: $addingViewBool) {
-            AddRecipeView()
         }
     }
 }

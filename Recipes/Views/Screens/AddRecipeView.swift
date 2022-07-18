@@ -9,6 +9,19 @@ import SwiftUI
 import Combine
 
 struct AddRecipeView: View {
+    enum FocusField: Hashable {
+        case ingredients, amount, steps
+    }
+    
+    var recipeUnits: [Dimension] {
+        let masses: [UnitMass] = [.milligrams, .grams, .kilograms, .ounces, .pounds]
+        let volumes: [UnitVolume] = [.cups, .fluidOunces, .gallons, .teaspoons, .tablespoons, .milliliters, .liters]
+        
+        return masses + volumes
+    }
+    
+    @FocusState private var focusedField: FocusField?
+    
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var firebaseManager: FirebaseManager
     @StateObject private var recipeManager = RecipeManager()
@@ -17,12 +30,14 @@ struct AddRecipeView: View {
     @State var cookTime = "0"
     
     @State private var currentIngredient = ""
+    @State private var currentAmount = ""
+    @State private var currentUnit: Dimension?
     @State private var currentInstruction = ""
     
     var recipeAddable: Bool {
         return !recipeManager.name.isEmpty && !recipeManager.author.isEmpty &&
-//        TODO: Reintroduce when ingredients and steps can be added
-//        !recipeManager.ingredients.isEmpty && !recipeManager.steps.isEmpty &&
+        //        TODO: Reintroduce when ingredients and steps can be added
+        //        !recipeManager.ingredients.isEmpty && !recipeManager.steps.isEmpty &&
         !(recipeManager.type == .unknown) && !(recipeManager.difficulty == .unknown)
     }
     
@@ -39,35 +54,73 @@ struct AddRecipeView: View {
                         .font(.title2)
                         .bold()
                     TextField("Name", text: $recipeManager.name)
-                        .textFieldStyle(.roundedBorder)
                 }
                 
                 // MARK: Type and Difficulty Picker
-                RecipeTypeView().environmentObject(recipeManager)
-                RecipeDifficultyView().environmentObject(recipeManager)
-                
-                // MARK: Ingredients
-                RecipeIngredientView().environmentObject(recipeManager)
-                TextField("Ingredient", text: $currentIngredient).onSubmit {
-                    if !currentIngredient.isEmpty {
-                        recipeManager.ingredients.append(RecipeIngredient(name: currentIngredient, amount: 1, unit: "kg"))
-                        currentIngredient = ""
-                    }
+                VStack {
+                    RecipeTypeView().environmentObject(recipeManager)
+                    RecipeDifficultyView().environmentObject(recipeManager)
                 }
                 
-//                RecipeInstructionView().environmentObject(recipeManager)
-//                TextField("Instruction", text: $currentInstruction).onSubmit {
-//                    if !currentInstruction.isEmpty {
-//                        recipeManager.steps.append(currentInstruction)
-//                        currentInstruction = ""
-//                    }
-//                }
+                // MARK: Ingredients
+                VStack(alignment: .leading, spacing: 10) {
+                    RecipeIngredientView().environmentObject(recipeManager)
+                    HStack {
+                        TextField("Ingredient", text: $currentIngredient)
+                            .focused($focusedField, equals: .ingredients)
+                            .onSubmit {
+                                self.focusedField = .amount
+                            }
+                            
+                        TextField("Amount", text: $currentAmount)
+                            .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .amount)
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Button("Cancel") {
+                                        self.focusedField = nil
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Button("Done") {
+                                        if !currentIngredient.isEmpty && !currentAmount.isEmpty {
+                                            guard let amount = Float(currentAmount) else { return }
+                                            let unit = currentUnit?.symbol ?? ""
+                                            
+                                            recipeManager.ingredients.append(
+                                                    RecipeIngredient(name: currentIngredient, amount: amount, unit: unit))
+                                            
+                                            currentAmount = ""
+                                            currentIngredient = ""
+                                            self.focusedField = .ingredients
+                                        }
+                                    }
+                                }
+                            }
+                            .frame(width: 75)
+                        
+                        Picker("Unit", selection: $currentUnit) {
+                            ForEach(recipeUnits, id: \.self) { recipeUnit in
+                                Text(recipeUnit.symbol).tag(recipeUnit as Dimension?)
+                            }
+                            Text("other").tag(nil as Dimension?)
+                        }
+                    }
+                }.lineLimit(1)
+                
+                //                RecipeInstructionView().environmentObject(recipeManager)
+                //                TextField("Instruction", text: $currentInstruction).onSubmit {
+                //                    if !currentInstruction.isEmpty {
+                //                        recipeManager.steps.append(currentInstruction)
+                //                        currentInstruction = ""
+                //                    }
+                //                }
                 
                 // MARK: Times
                 HStack {
                     Text("prepTime")
-                        .font(.title3)
-                        .bold()
+                        .font(.headline)
                     
                     TextField("prepTime", text: $prepTime)
                         .keyboardType(.numberPad)
@@ -83,8 +136,7 @@ struct AddRecipeView: View {
                         .textFieldStyle(.roundedBorder)
                     
                     Text("cookTime")
-                        .font(.title3)
-                        .bold()
+                        .font(.headline)
                     
                     TextField("cookTime", text: $cookTime)
                         .keyboardType(.numberPad)
@@ -107,8 +159,6 @@ struct AddRecipeView: View {
                         .bold()
                     
                     TextField("Author", text: $recipeManager.author)
-                        .textFieldStyle(.roundedBorder)
-                    
                 }
                 
                 Button {
@@ -120,7 +170,8 @@ struct AddRecipeView: View {
                 }.buttonStyle(.borderedProminent)
                     .disabled(!recipeAddable)
                 
-            }.padding()
+            }
+            .padding()
         }
     }
 }

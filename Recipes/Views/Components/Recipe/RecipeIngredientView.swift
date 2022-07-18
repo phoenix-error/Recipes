@@ -24,9 +24,9 @@ struct RecipeIngredientView: View {
             Text("Ingredients")
                 .font(.title2)
                 .bold()
-                .padding(.bottom)
+                .padding(.bottom, 5)
             
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(ingredients, id: \.self) { ingredient in
                     HStack {
                         Text(ingredient.name)
