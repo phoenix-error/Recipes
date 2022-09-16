@@ -11,9 +11,8 @@ import FirebaseAuth
 
 @main
 struct RecipesApp: App {
-    
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var firebaseManager = FirebaseManager()
-    @StateObject var router = ViewRouter()
     
     init() {
         FirebaseApp.configure()
@@ -22,17 +21,16 @@ struct RecipesApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                ContentView()
-                    .onAppear(perform: {
-                        firebaseManager.setRouter(router)
-                        firebaseManager.setView()
-                    })
+                RootView()
                     .navigationViewStyle(.stack)
                     .navigationBarTitleDisplayMode(.inline)
-                
             }
-            .environmentObject(router)
             .environmentObject(firebaseManager)
+            .onChange(of: scenePhase) { phase in
+                if phase == .background {
+                    // Save here
+                }
+            }
         }
     }
 }

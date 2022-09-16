@@ -13,15 +13,7 @@ final class FirebaseManager: ObservableObject {
     let database = Firestore.firestore()
     let auth = Auth.auth()
     
-    var router: ViewRouter?
-    
-    // Variables for Authentication
-    @Published var name: String = ""
-    @Published var email: String = ""
-    @Published var password: String = ""
-    @Published var passwordConfirmation: String = ""
-    @Published var processing = false
-    @Published var errorMessage = ""
+    static let shared = FirebaseManager()
     
     // Variables for Firestore
     @Published var recipes: [Recipe] = []
@@ -53,104 +45,47 @@ final class FirebaseManager: ObservableObject {
 
 // MARK: FirebaseAuth functions
 extension FirebaseManager {
-    var loginEnabled: Bool {
-        return !processing && !email.isEmpty && !password.isEmpty ? false : true
-    }
-    
-    var createEnabled: Bool {
-        !processing && !email.isEmpty && !password.isEmpty && !passwordConfirmation.isEmpty && password == passwordConfirmation ? false : true
-    }
-    
-    var hasRouter: Bool {
-        return router != nil
-    }
-    
-    func login() {
-        guard hasRouter else { return }
-        
-        processing = true
-        
-        auth.signIn(withEmail: email, password: password) { [self] authResult, error in
-            
-            guard error == nil else {
-                processing = false
-                errorMessage = error!.localizedDescription
+    func login(email: String, password: String) {
+        auth.signIn(withEmail: email, password: password) { (authResult, error) in
+            if let error = error {
+                print(error.localizedDescription)
                 return
             }
             
             switch authResult {
             case .none:
                 print("Could not sign in user.")
-                processing = false
             case .some:
                 print("User signed in")
-                processing = false
-                
-                setPage(page: .home)
+                UserDefaults.standard.set(UUID().uuidString, forKey: Config.authTokenKey)
+                AppManager.Authenticated.send(true)
             }
-            
         }
     }
     
-    func create() {
-        guard hasRouter else { return }
-        
-        processing = true
-        
-        auth.createUser(withEmail: email, password: password) { [self] authResult, error in
-            guard error == nil else {
-                errorMessage = error!.localizedDescription
-                processing = false
+    func signUp(email: String, password: String) {
+        auth.createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                print(error.localizedDescription)
                 return
             }
             
             switch authResult {
             case .none:
                 print("Could not create account.")
-                processing = false
             case .some:
                 print("User created")
-                processing = false
-                
-                setPage(page: .home)
+                UserDefaults.standard.set(UUID().uuidString, forKey: Config.authTokenKey)
+                AppManager.Authenticated.send(true)
             }
         }
     }
     
     func logout() {
-        guard hasRouter else { return }
-        
         do {
             try auth.signOut()
-            setPage(page: .signIn)
         } catch {
             print("Already logged out")
-        }
-    }
-    
-    func clearFields() {
-        email = ""
-        password = ""
-        passwordConfirmation = ""
-    }
-    
-    func setRouter(_ router: ViewRouter) {
-        self.router = router
-    }
-    
-    func setView() {
-        if auth.currentUser != nil {
-            setPage(page: .home)
-        } else {
-            setPage(page: .signIn)
-        }
-    }
-    
-    func setPage(page: AppPage) {
-        DispatchQueue.main.async {
-            withAnimation(.easeInOut) {
-                self.router?.currentPage = page
-            }
         }
     }
 }

@@ -8,10 +8,6 @@
 import SwiftUI
 
 struct AuthenticationBottomBarView: View {
-    
-    @EnvironmentObject var router: ViewRouter
-    @EnvironmentObject var firebaseManager: FirebaseManager
-    
     var message: String
     var buttonText: String
     var action: () -> Void
@@ -25,11 +21,13 @@ struct AuthenticationBottomBarView: View {
     var body: some View {
         HStack {
             Text(message)
+                .foregroundColor(.secondary)
+                .opacity(0.9)
             Button(action: action) {
                 Text(buttonText)
             }
         }
-        .opacity(0.9)
+        
     }
 }
 

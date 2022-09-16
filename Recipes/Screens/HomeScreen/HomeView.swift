@@ -34,6 +34,8 @@ struct HomeView: View {
                 
                 Button {
                     firebaseManager.logout()
+                    UserDefaults.standard.set(nil, forKey: Config.authTokenKey)
+                    AppManager.Authenticated.send(false)
                 } label: {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                 }
