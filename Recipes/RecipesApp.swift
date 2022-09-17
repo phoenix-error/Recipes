@@ -11,12 +11,9 @@ import FirebaseAuth
 
 @main
 struct RecipesApp: App {
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @Environment(\.scenePhase) private var scenePhase
     @StateObject var firebaseManager = FirebaseManager()
-    
-    init() {
-        FirebaseApp.configure()
-    }
     
     var body: some Scene {
         WindowGroup {
@@ -33,4 +30,11 @@ struct RecipesApp: App {
             }
         }
     }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+    FirebaseApp.configure()
+    return true
+  }
 }
