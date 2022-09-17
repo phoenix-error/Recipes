@@ -10,8 +10,8 @@ import FirebaseFirestore
 import FirebaseAuth
 
 final class FirebaseManager: ObservableObject {
-    let database = Firestore.firestore()
-    let auth = Auth.auth()
+    private let database = Firestore.firestore()
+    private let auth = Auth.auth()
     
     static let shared = FirebaseManager()
     
@@ -19,28 +19,9 @@ final class FirebaseManager: ObservableObject {
     @Published var recipes: [Recipe] = []
     
     // Variables for database
-    private var recipeDB: CollectionReference {
+    var recipeReference: CollectionReference {
         return database.collection("recipes")
     }
-    
-    init() {
-        fetch()
-    }
-    
-    // MARK: Fetch from Firestore
-    func fetch() {
-        recipeDB.addSnapshotListener { (querySnapshot, _) in
-            guard let documents = querySnapshot?.documents else {
-                print("No documents")
-                return
-            }
-            
-            self.recipes = documents.compactMap { queryDocumentSnapshot -> Recipe? in
-                return try? queryDocumentSnapshot.data(as: Recipe.self)
-            }
-        }
-    }
-    
 }
 
 // MARK: FirebaseAuth functions
@@ -92,11 +73,11 @@ extension FirebaseManager {
 
 // MARK: CRUD for Firestore
 extension FirebaseManager {
-    func createRecipe(_ recipe: Recipe) {
-        do {
-            _ = try recipeDB.addDocument(from: recipe)
-        } catch let error {
-            print("Error writing Recipe to Firestore \(error.localizedDescription)")
-        }
-    }
+//    func createRecipe(_ recipe: Recipe) {
+//        do {
+//            _ = try recipeDB.addDocument(from: recipe)
+//        } catch let error {
+//            print("Error writing Recipe to Firestore \(error.localizedDescription)")
+//        }
+//    }
 }

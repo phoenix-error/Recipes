@@ -112,7 +112,7 @@ struct AddRecipeView: View {
                 }
                 
                 Button {
-                    firebaseManager.createRecipe(recipeManager.formRecipe())
+//                    firebaseManager.createRecipe(recipeManager.formRecipe())
                     dismiss()
                 } label: {
                     Text("Add")

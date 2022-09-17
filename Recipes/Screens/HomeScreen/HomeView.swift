@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    
-    @EnvironmentObject var firebaseManager: FirebaseManager
-    @State private var addingViewBool = false
+    @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
-        List(firebaseManager.recipes) { recipe in
+        List(viewModel.recipes) { recipe in
             ZStack {
                 RecipeCellView(recipe: recipe)
                 NavigationLink("", destination: RecipeView(recipe: recipe))
@@ -22,26 +20,20 @@ struct HomeView: View {
         }
         .listStyle(.plain)
         .navigationTitle("Recipes")
-        .onAppear(perform: firebaseManager.fetch)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button {
-                    addingViewBool.toggle()
-                    
+                    viewModel.showingAddView.toggle()
                 } label: {
                     Image(systemName: "plus")
                 }
                 
-                Button {
-                    firebaseManager.logout()
-                    UserDefaults.standard.set(nil, forKey: Config.authTokenKey)
-                    AppManager.Authenticated.send(false)
-                } label: {
+                Button(action: viewModel.logout) {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                 }
             }
         }
-        .sheet(isPresented: $addingViewBool) {
+        .sheet(isPresented: $viewModel.showingAddView) {
             AddRecipeView()
         }
     }
