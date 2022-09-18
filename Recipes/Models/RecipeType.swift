@@ -17,11 +17,11 @@ enum RecipeType: String, Codable, CaseIterable, Identifiable {
         let container = try decoder.singleValueContainer()
         let status = try? container.decode(String.self)
         switch status {
-        case "Breakfast": self = .breakfast
-        case "Lunch": self = .lunch
-        case "Dinner": self = .dinner
-        case "Dessert": self = .dessert
-        case "Snack": self = .snack
+        case "breakfast": self = .breakfast
+        case "lunch": self = .lunch
+        case "dinner": self = .dinner
+        case "dessert": self = .dessert
+        case "snack": self = .snack
         default:
             self = .unknown
         }

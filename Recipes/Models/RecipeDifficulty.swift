@@ -17,9 +17,9 @@ enum RecipeDifficulty: String, Codable, CaseIterable, Identifiable {
         let container = try decoder.singleValueContainer()
         let status = try? container.decode(String.self)
         switch status {
-        case "Easy": self = .easy
-        case "Medium": self = .medium
-        case "Hard": self = .hard
+        case "easy": self = .easy
+        case "medium": self = .medium
+        case "hard": self = .hard
         default: self = .unknown
         }
     }
