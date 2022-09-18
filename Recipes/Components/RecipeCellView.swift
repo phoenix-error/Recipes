@@ -27,7 +27,7 @@ struct RecipeCellView: View {
                     Text("Dinner")
                         .font(.headline)
                         .foregroundColor(.secondary)
-                    Text(recipe.name)
+                    Text(recipe.title)
                         .font(.title)
                         .fontWeight(.black)
                         .foregroundColor(.primary)

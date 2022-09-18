@@ -10,7 +10,7 @@ import FirebaseFirestoreSwift
 
 struct Recipe: Identifiable, Codable {
     @DocumentID var id: String?
-    var name: String
+    var title: String
     var type: RecipeType
     var difficulty: RecipeDifficulty
     var image: String // String to URL in Firebase store
@@ -22,7 +22,7 @@ struct Recipe: Identifiable, Codable {
     
     enum CodingKeys: String, CodingKey {
         case id
-        case name
+        case title
         case type
         case difficulty
         case image

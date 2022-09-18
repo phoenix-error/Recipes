@@ -15,9 +15,6 @@ final class FirebaseManager: ObservableObject {
     
     static let shared = FirebaseManager()
     
-    // Variables for Firestore
-    @Published var recipes: [Recipe] = []
-    
     // Variables for database
     var recipeReference: CollectionReference {
         return database.collection("recipes")
@@ -73,11 +70,11 @@ extension FirebaseManager {
 
 // MARK: CRUD for Firestore
 extension FirebaseManager {
-//    func createRecipe(_ recipe: Recipe) {
-//        do {
-//            _ = try recipeDB.addDocument(from: recipe)
-//        } catch let error {
-//            print("Error writing Recipe to Firestore \(error.localizedDescription)")
-//        }
-//    }
+    func createRecipe(_ recipe: Recipe) {
+        do {
+            _ = try recipeReference.addDocument(from: recipe)
+        } catch let error {
+            print("Error writing Recipe to Firestore \(error.localizedDescription)")
+        }
+    }
 }

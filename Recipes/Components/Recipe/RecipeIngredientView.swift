@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct RecipeIngredientView: View {
-    @EnvironmentObject var recipeManager: RecipeManager
+//    @EnvironmentObject var recipeManager: RecipeManager
     var recipe: Recipe?
     
     var ingredients: [RecipeIngredient] {
         
         guard let recipe = recipe else {
-            return recipeManager.ingredients
+//            return recipeManager.ingredients
+            return []
             }
         return recipe.ingredients
     }

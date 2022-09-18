@@ -7,7 +7,7 @@
 
 import Foundation
 
-let defaultRecipe = Recipe(id: "627ba893be1f1f1f9f9a3865", name: "Patrick Coffey", type: RecipeType.snack, difficulty: RecipeDifficulty.hard,
+let defaultRecipe = Recipe(id: "627ba893be1f1f1f9f9a3865", title: "Patrick Pasta", name: "Patrick Coffey", type: RecipeType.snack, difficulty: RecipeDifficulty.hard,
                            image: "https://picsum.photos/id/63/400/400", prepTime: 2343, cookTime: 543, ingredients: [
                             RecipeIngredient(name: "culpa", amount: Float(Int.random(in: 1...10)), unit: "kg"),
                             RecipeIngredient(name: "ullamco", amount: Float(Int.random(in: 1...10)), unit: "kg"),

@@ -11,7 +11,7 @@ struct RecipeInformationCardView: View {
     let recipe: Recipe
     var body: some View {
         VStack(alignment: .leading) {
-            Text(recipe.name)
+            Text(recipe.title)
                 .font(.title)
                 .bold()
             Text(recipe.author)
@@ -19,11 +19,11 @@ struct RecipeInformationCardView: View {
             HStack {
                 Label("\(recipe.cookTime)min", systemImage: "stopwatch")
                 Spacer()
-                Text(recipe.difficulty.asString)
+                Text(recipe.difficulty.string)
                     .fontWeight(.medium)
                     .foregroundColor(recipe.difficulty.color)
                 Spacer()
-                Text(recipe.type.asString)
+                Text(recipe.type.string)
                     .fontWeight(.medium)
             }.font(.title3)
             

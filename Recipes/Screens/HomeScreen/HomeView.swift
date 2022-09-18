@@ -34,7 +34,9 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $viewModel.showingAddView) {
-            AddRecipeView()
+            NavigationView {
+                AddRecipeView()                
+            }
         }
     }
 }

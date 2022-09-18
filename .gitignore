@@ -12,4 +12,6 @@
 
 .env.default
 .DS_Store
+*.xcuserstate
+*.ipa
 

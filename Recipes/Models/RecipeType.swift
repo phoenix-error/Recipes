@@ -27,24 +27,15 @@ enum RecipeType: String, Codable, CaseIterable, Identifiable {
         }
     }
     
-    var asString: String {
-        switch self {
-        case .breakfast:
-            return "Breakfast"
-        case .lunch:
-            return "Lunch"
-        case .dinner:
-            return "Dinner"
-        case .dessert:
-            return "Dessert"
-        case .snack:
-            return "Snack"
-        default:
-            return "Unknown"
-        }
+    var string: String {
+        return self.rawValue.capitalized
     }
     
     var asText: Text {
-        return Text(self.asString).foregroundColor(.white)
+        return Text(self.string).foregroundColor(.white)
+    }
+    
+    static var allValidCases: [RecipeType] {
+        return RecipeType.allCases.filter { $0 != .unknown }
     }
 }

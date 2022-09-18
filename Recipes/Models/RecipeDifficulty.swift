@@ -20,23 +20,14 @@ enum RecipeDifficulty: String, Codable, CaseIterable, Identifiable {
         case "Easy": self = .easy
         case "Medium": self = .medium
         case "Hard": self = .hard
-        default:
-            self = .unknown
+        default: self = .unknown
         }
     }
     
-    var asString: String {
-        switch self {
-        case .easy:
-            return "Easy"
-        case .medium:
-            return "Medium"
-        case .hard:
-            return "Hard"
-        default:
-                return "Unknown"
-        }
+    var string: String {
+        return self.rawValue.capitalized
     }
+
     
     var color: Color {
         switch self {
@@ -49,5 +40,9 @@ enum RecipeDifficulty: String, Codable, CaseIterable, Identifiable {
         default:
             return .black
         }
+    }
+    
+    static var allValidCases: [RecipeDifficulty] {
+        return RecipeDifficulty.allCases.filter { $0 != .unknown }
     }
 }
