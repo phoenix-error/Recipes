@@ -24,6 +24,7 @@ class AddRecipeViewModel: ObservableObject {
     
     @Published var prepTime = 0
     @Published var cookTime = 0
+    var imageURL: String?
     
     let firebaseManager = FirebaseManager.shared
     
@@ -77,16 +78,26 @@ class AddRecipeViewModel: ObservableObject {
     }
     
     func addRecipe() {
-        let recipe = Recipe(title: title,
-                            type: type,
-                            difficulty: difficulty,
-                            image: "",
-                            prepTime: prepTime,
-                            cookTime: cookTime,
-                            ingredients: ingredients,
-                            steps: steps,
-                            author: author)
-        
-        firebaseManager.createRecipe(recipe)
+        let recipeStuff = { [self] in
+            let recipe = Recipe(title: title,
+                                type: type,
+                                difficulty: difficulty,
+                                image: self.imageURL,
+                                prepTime: prepTime,
+                                cookTime: cookTime,
+                                ingredients: ingredients,
+                                steps: steps,
+                                author: author)
+            
+            firebaseManager.createRecipe(recipe)
+        }
+        if self.image != UIImage() {
+            self.firebaseManager.uploadImage(image: self.image) { url in
+                self.imageURL = url
+                recipeStuff()
+            }
+        } else {
+            recipeStuff()
+        }
     }
 }

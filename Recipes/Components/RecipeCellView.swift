@@ -8,38 +8,39 @@
 import SwiftUI
 
 struct RecipeCellView: View {
-    let recipe: Recipe
+    @ObservedObject private var viewModel: RecipeCellViewModel
+    
+    init(recipe: Recipe) {
+        self.viewModel = RecipeCellViewModel(recipe: recipe)
+    }
+    
     var body: some View {
         VStack {
-            if !recipe.image.isEmpty {
-                AsyncImage(url: URL(string: recipe.image)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .overlay(alignment: .bottomTrailing) {
-                            RecipeCellImageOverlayView(recipe: recipe)
-                        }
-                } placeholder: {
-                    Color.clear
-                }
+            if viewModel.shownImage != UIImage() {
+                Image(uiImage: viewModel.shownImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .overlay(alignment: .bottomTrailing) {
+                        RecipeCellImageOverlayView(recipe: viewModel.recipe)
+                    }
             }
             
             HStack {
                 VStack(alignment: .leading) {
-                    Text(recipe.title)
+                    Text(viewModel.recipe.title)
                         .font(.title)
                         .fontWeight(.black)
                         .foregroundColor(.primary)
                         .lineLimit(3)
                     
-                        Text(recipe.author.uppercased())
+                    Text(viewModel.recipe.author.uppercased())
                             .font(.caption)
                             .foregroundColor(.secondary)
                     HStack {
                         Text("Difficulty: ")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        DifficultyView(difficulty: recipe.difficulty)
+                        DifficultyView(difficulty: viewModel.recipe.difficulty)
                     }
                 }
                 
@@ -53,6 +54,9 @@ struct RecipeCellView: View {
                 .stroke(Color(.sRGB, red: 150/255, green: 150/255, blue: 150/255, opacity: 0.1), lineWidth: 1)
         )
         .padding([.top, .horizontal])
+        .onAppear {
+            viewModel.fetchImage()
+        }
     }
 }
 

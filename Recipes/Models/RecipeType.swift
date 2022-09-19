@@ -36,6 +36,6 @@ enum RecipeType: String, Codable, CaseIterable, Identifiable {
     }
     
     static var allValidCases: [RecipeType] {
-        return RecipeType.allCases.filter { $0 != .unknown }
+        return RecipeType.allCases.filter { $0 != .unknown }
     }
 }

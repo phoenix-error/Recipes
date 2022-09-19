@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct AddRecipeView: View {
+    
+    enum FocusedField {
+        case ingredients, steps
+    }
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AddRecipeViewModel()
+    @FocusState private var focused: FocusedField?
     
     var body: some View {
         Form(content: {
@@ -21,10 +26,13 @@ struct AddRecipeView: View {
                 }
                 
                 TextField("Ingredient", text: $viewModel.newIngredient)
+                    .focused($focused, equals: .ingredients)
                     .submitLabel(.next)
                     .onSubmit {
                         viewModel.addIngredient()
+                        focused = .ingredients
                     }
+                
             }
             
             Section {
@@ -33,9 +41,11 @@ struct AddRecipeView: View {
                 }
                 
                 TextField("Step", text: $viewModel.newStep)
+                    .focused($focused, equals: .steps)
                     .submitLabel(.next)
                     .onSubmit {
                         viewModel.addStep()
+                        focused = .steps
                     }
             }
             
@@ -63,12 +73,21 @@ struct AddRecipeView: View {
                         Text(difficulty.string)
                             .tag(difficulty.string)
                     }
+                    
+                    if viewModel.pickerDifficulty == RecipeDifficulty.unknown.string {
+                        Text("Unknown")
+                            .tag(RecipeDifficulty.unknown.string)
+                    }
                 }
                 
                 Picker("Recipe type", selection: $viewModel.pickerType) {
                     ForEach(RecipeType.allValidCases) { type in
                         Text(type.string)
                             .tag(type.string)
+                    }
+                    if viewModel.pickerType == RecipeType.unknown.string {
+                        Text("Unknown")
+                            .tag(RecipeType.unknown.string)
                     }
                 }
             }
@@ -92,103 +111,16 @@ struct AddRecipeView: View {
         .fullScreenCover(isPresented: $viewModel.showingImagePicker) {
             ImagePicker(sourceType: .photoLibrary, selectedImage: $viewModel.image)
         }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    focused = nil
+                }
+            }
+        }
     }
 }
-//        ScrollView {
-//            VStack(alignment: .leading, spacing: 50) {
-//                Text("Add Recipe")
-//                    .font(.largeTitle)
-//                    .bold()
-//
-//                // MARK: Basic Information
-//                VStack(alignment: .leading) {
-//                    Text("Name")
-//                        .font(.title2)
-//                        .bold()
-//                    TextField("Name", text: $recipeManager.name)
-//                        .textFieldStyle(.roundedBorder)
-//                }
-//
-//                // MARK: Type and Difficulty Picker
-//                RecipeTypeView().environmentObject(recipeManager)
-//                RecipeDifficultyView().environmentObject(recipeManager)
-//
-//                // MARK: Ingredients
-//                RecipeIngredientView().environmentObject(recipeManager)
-//                TextField("Ingredient", text: $currentIngredient).onSubmit {
-//                    if !currentIngredient.isEmpty {
-//                        recipeManager.ingredients.append(RecipeIngredient(name: currentIngredient, amount: 1, unit: "kg"))
-//                        currentIngredient = ""
-//                    }
-//                }
-//
-//                //                RecipeInstructionView().environmentObject(recipeManager)
-//                //                TextField("Instruction", text: $currentInstruction).onSubmit {
-//                //                    if !currentInstruction.isEmpty {
-//                //                        recipeManager.steps.append(currentInstruction)
-//                //                        currentInstruction = ""
-//                //                    }
-//                //                }
-//
-//                // MARK: Times
-//                HStack {
-//                    Text("prepTime")
-//                        .font(.title3)
-//                        .bold()
-//
-//                    TextField("prepTime", text: $prepTime)
-//                        .keyboardType(.numberPad)
-//                        .onChange(of: prepTime) { value in
-//                            let filtered = value.filter { "0123456789".contains($0) }
-//                            if value != filtered {
-//                                self.prepTime = filtered
-//                                self.recipeManager.prepTime = Int(filtered) ?? 0
-//                            } else {
-//                                self.recipeManager.prepTime = Int(filtered) ?? 0
-//                            }
-//                        }
-//                        .textFieldStyle(.roundedBorder)
-//
-//                    Text("cookTime")
-//                        .font(.title3)
-//                        .bold()
-//
-//                    TextField("cookTime", text: $cookTime)
-//                        .keyboardType(.numberPad)
-//                        .onChange(of: cookTime) { value in
-//                            let filtered = value.filter { "0123456789".contains($0) }
-//                            if value != filtered {
-//                                self.cookTime = filtered
-//                                self.recipeManager.cookTime = Int(filtered) ?? 0
-//                            } else {
-//                                self.recipeManager.cookTime = Int(filtered) ?? 0
-//                            }
-//                        }
-//                        .textFieldStyle(.roundedBorder)
-//                }
-//
-//                // MARK: Author
-//                VStack(alignment: .leading) {
-//                    Text("Author")
-//                        .font(.title2)
-//                        .bold()
-//
-//                    TextField("Author", text: $viewModel.author)
-//                        .textFieldStyle(.roundedBorder)
-//
-//                }
-//
-//                Button {
-//                    //                    firebaseManager.createRecipe(recipeManager.formRecipe())
-//                    dismiss()
-//                } label: {
-//                    Text("Add")
-//                        .frame(maxWidth: .infinity)
-//                }
-//                .disabled(!viewModel.actionButtonEnabled)
-//
-//            }.padding()
-//        }
 
 struct AddRecipeView_Previews: PreviewProvider {
     static var previews: some View {

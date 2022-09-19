@@ -13,7 +13,7 @@ struct Recipe: Identifiable, Codable {
     var title: String
     var type: RecipeType
     var difficulty: RecipeDifficulty
-    var image: String // String to URL in Firebase store
+    var image: String? // String to URL in Firebase store
     var prepTime: Int
     var cookTime: Int
     var ingredients: [RecipeIngredient]
