@@ -6,20 +6,24 @@
 //
 
 import Foundation
+import SwiftUI
 
 class AddRecipeViewModel: ObservableObject {
     @Published var title = ""
     @Published var type: RecipeType = .unknown
     @Published var difficulty: RecipeDifficulty = .unknown
-    @Published var image = ""
-    @Published var prepTime = 0
-    @Published var cookTime = 0
+    @Published var image = UIImage()
     @Published var ingredients = [RecipeIngredient]()
     @Published var steps = [String]()
     @Published var author = ""
     
     @Published var newIngredient = ""
     @Published var newStep = ""
+    
+    @Published var showingImagePicker = false
+    
+    @Published var prepTime = 0
+    @Published var cookTime = 0
     
     let firebaseManager = FirebaseManager.shared
     
@@ -32,6 +36,14 @@ class AddRecipeViewModel: ObservableObject {
     
     var navTitle: String {
         return "Add Recipe"
+    }
+    
+    var imagePickerTitle: String {
+        if image == UIImage() {
+            return "Select Image"
+        } else {
+            return "Change Image"
+        }
     }
     
     var pickerDifficulty: String {
@@ -47,7 +59,6 @@ class AddRecipeViewModel: ObservableObject {
         get {
             type.string
         }
-        
         set {
             type = RecipeType(rawValue: newValue.lowercased())!
         }

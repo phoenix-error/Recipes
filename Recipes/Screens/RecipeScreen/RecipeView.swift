@@ -40,7 +40,7 @@ struct RecipeView: View {
                         .font(.system(size: 12, design: .monospaced))
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text("\(viewModel.recipe.ingredients.count)items")
+                    Text("\(viewModel.recipe.ingredients.count) items")
                         .font(.system(size: 8, design: .monospaced))
                         .foregroundColor(.secondary)
                 }
@@ -57,16 +57,12 @@ struct RecipeView: View {
                         .font(.system(size: 12, design: .monospaced))
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text("\(viewModel.recipe.steps.count)items")
+                    Text("\(viewModel.recipe.steps.count) items")
                         .font(.system(size: 8, design: .monospaced))
                         .foregroundColor(.secondary)
                 }
                 
-                List {
-                    ForEach(viewModel.recipe.steps, id: \.self) { step in
-                        Text(step)
-                    }
-                }.listStyle(.plain)
+                RecipeStepsView(recipe: viewModel.recipe)
             }
         }
         .padding()

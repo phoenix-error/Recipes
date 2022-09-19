@@ -7,22 +7,19 @@
 
 import SwiftUI
 
-struct RecipeInstructionView: View {
-    //@EnvironmentObject var recipeManager: RecipeManager
+struct RecipeStepsView: View {
     var recipe: Recipe?
     
     var instructions: [String] {
         guard let recipe = recipe else {
             return []
-//            return recipeManager.steps
-            }
+            //            return recipeManager.steps
+        }
         return recipe.steps
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Instructions").font(.title2).bold()
-            
+        ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 ForEach(Array(instructions.enumerated()), id: \.offset) { index, instructionStep in
                     HStack(alignment: .firstTextBaseline) {
@@ -42,6 +39,6 @@ struct RecipeInstructionView: View {
 
 struct RecipeInstructionView_Previews: PreviewProvider {
     static var previews: some View {
-        RecipeInstructionView(recipe: defaultRecipe)
+        RecipeStepsView(recipe: defaultRecipe)
     }
 }

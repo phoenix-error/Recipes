@@ -72,8 +72,16 @@ struct AddRecipeView: View {
                     }
                 }
             }
+            Section {
+                Button(viewModel.imagePickerTitle) {
+                    viewModel.showingImagePicker.toggle()
+                }
+                
+            }
             
-            TextField("Author", text: $viewModel.author)
+            Section {
+                TextField("Author", text: $viewModel.author)
+            }
             
             Button("Add Recipe") {
                 viewModel.addRecipe()
@@ -81,6 +89,9 @@ struct AddRecipeView: View {
             }.disabled(!viewModel.actionButtonEnabled)
         })
         .navigationTitle(viewModel.navTitle)
+        .fullScreenCover(isPresented: $viewModel.showingImagePicker) {
+            ImagePicker(sourceType: .photoLibrary, selectedImage: $viewModel.image)
+        }
     }
 }
 //        ScrollView {

@@ -28,7 +28,6 @@ enum RecipeDifficulty: String, Codable, CaseIterable, Identifiable {
         return self.rawValue.capitalized
     }
 
-    
     var color: Color {
         switch self {
         case .easy:
@@ -39,6 +38,16 @@ enum RecipeDifficulty: String, Codable, CaseIterable, Identifiable {
             return .red
         default:
             return .black
+        }
+    }
+    
+    func color(index: Int) -> Color {
+        if (self == .easy && index == 0) ||
+            (self == .medium && index <= 1) ||
+            (self == .hard && index <= 2) {
+            return self.color
+        } else {
+            return Color.white
         }
     }
     
