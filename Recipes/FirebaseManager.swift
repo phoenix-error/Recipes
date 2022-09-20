@@ -86,7 +86,7 @@ extension FirebaseManager {
     func deleteRecipe(_ recipe: Recipe) {
         guard let id = recipe.id else { return }
         
-        recipeReference.document(id).delete() { error in
+        recipeReference.document(id).delete { error in
             if let error = error {
                 print("[!] Error removing recipe: \(error)")
             }
