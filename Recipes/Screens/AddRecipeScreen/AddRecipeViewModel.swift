@@ -66,6 +66,7 @@ class AddRecipeViewModel: ObservableObject {
     }
     
     func addIngredient() {
+        guard !newIngredient.isEmpty else { return }
         // TODO: Need way to implement amount and unit
         let ingredient = RecipeIngredient(name: newIngredient, amount: Float.random(in: 1...10), unit: ["kg", "ml", "mg", "g", "l"].randomElement()!)
         self.ingredients.append(ingredient)
@@ -73,6 +74,7 @@ class AddRecipeViewModel: ObservableObject {
     }
     
     func addStep() {
+        guard !newStep.isEmpty else { return }
         self.steps.append(newStep)
         newStep = ""
     }

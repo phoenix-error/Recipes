@@ -19,7 +19,8 @@ struct RecipeCellView: View {
             if viewModel.shownImage != UIImage() {
                 Image(uiImage: viewModel.shownImage)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(maxWidth: .infinity, maxHeight: 200)
                     .overlay(alignment: .bottomTrailing) {
                         RecipeCellImageOverlayView(recipe: viewModel.recipe)
                     }
@@ -47,6 +48,7 @@ struct RecipeCellView: View {
                 Spacer()
             }
             .padding()
+            .background(.white)
         }
         .cornerRadius(10)
         .overlay(
