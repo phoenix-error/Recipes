@@ -79,7 +79,17 @@ extension FirebaseManager {
         do {
             _ = try recipeReference.addDocument(from: recipe)
         } catch let error {
-            print("Error writing Recipe to Firestore \(error.localizedDescription)")
+            print("[!] Error writing recipe to Firestore \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteRecipe(_ recipe: Recipe) {
+        guard let id = recipe.id else { return }
+        
+        recipeReference.document(id).delete() { error in
+            if let error = error {
+                print("[!] Error removing recipe: \(error)")
+            }
         }
     }
 }
@@ -115,6 +125,16 @@ extension FirebaseManager {
                 return
             } else {
                 completion(UIImage(data: data!))
+            }
+        }
+    }
+    
+    func deleteImage(url: String) {
+        let ref = storage.reference(withPath: url)
+        
+        ref.delete { error in
+            if let error = error {
+                print("[!] Error FirebaseStorage: \(error.localizedDescription)")
             }
         }
     }

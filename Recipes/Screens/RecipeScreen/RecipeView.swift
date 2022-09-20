@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RecipeView: View {
+    @Environment(\.dismiss) var dismiss
     @ObservedObject private var viewModel: RecipeViewModel
     
     init(recipe: Recipe) {
@@ -66,6 +67,17 @@ struct RecipeView: View {
             }
         }
         .padding()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    viewModel.deleteRecipe()
+                    dismiss()
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+            }
+        }
     }
 }
 
